@@ -1,0 +1,10 @@
+{
+  "name": "Parfum Manager",
+  "short_name": "Parfum",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf7f2",
+  "theme_color": "#1c1917"
+}
