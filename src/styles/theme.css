@@ -74,3 +74,26 @@ h2 { font-size: 1rem; margin: 0 0 8px; color: var(--gold); }
 }
 .tab-icon { font-size: 1.2rem; line-height: 1; }
 .tab.active { color: var(--gold); font-weight: 600; }
+/* ---------- Phase 4a : authentification ---------- */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.user-email { font-size: 0.75rem; opacity: 0.7; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px; }
+.logout { background: transparent; color: #f5efe4; border: 1px solid #57534e; border-radius: 8px; padding: 6px 10px; font-size: 0.75rem; cursor: pointer; min-height: 32px; }
+
+.auth-wrap { max-width: 420px; margin: 0 auto; padding: 32px 16px; }
+.auth-brand { font-family: Georgia, serif; letter-spacing: 0.08em; font-size: 1.3rem; text-align: center; margin-bottom: 18px; }
+
+.field { display: block; margin-bottom: 12px; }
+.field span { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
+.field input { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 1rem; background: #fff; color: var(--ink); }
+.field input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+.btn { width: 100%; padding: 14px; border: 0; border-radius: 10px; background: var(--ink); color: #f5efe4; font-size: 1rem; cursor: pointer; min-height: 48px; margin-top: 4px; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.msg { padding: 10px 12px; border-radius: 10px; font-size: 0.9rem; margin: 8px 0; }
+.msg.error { background: #fbeceb; color: var(--err); }
+.msg.ok { background: #e9f3ec; color: var(--ok); }
+
+.links { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 12px; }
+.link { background: none; border: 0; color: var(--gold); font-size: 0.9rem; cursor: pointer; padding: 8px; }
