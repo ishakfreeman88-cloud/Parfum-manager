@@ -14,11 +14,6 @@ type CompanyState = {
   refresh: () => Promise<void>;
 };
 
-type Row = {
-  role: Role;
-  companies: Company | Company[] | null;
-};
-
 const CompanyContext = createContext<CompanyState | undefined>(undefined);
 
 export function CompanyProvider({ children }: { children: ReactNode }) {
@@ -39,23 +34,41 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
     }
     setLoading(true);
     setError("");
-    const { data, error: err } = await supabase
+    setCompany(null);
+    setRole(null);
+
+    // 1) Mon appartenance active (la plus ancienne)
+    const { data: members, error: err1 } = await supabase
       .from("company_members")
-      .select("role, companies(id, name)")
+      .select("company_id, role")
       .eq("user_id", userId)
       .eq("status", "active")
       .order("created_at", { ascending: true })
       .limit(1);
 
-    if (err) {
-      setError("Impossible de charger votre entreprise.");
-      setCompany(null);
-      setRole(null);
-    } else {
-      const row = (data as unknown as Row[] | null)?.[0];
-      const c = row ? (Array.isArray(row.companies) ? row.companies[0] : row.companies) : null;
-      setCompany(c ?? null);
-      setRole(c && row ? row.role : null);
+    if (err1) {
+      setError("Lecture des membres impossible : " + err1.message);
+      setLoading(false);
+      return;
+    }
+
+    const m = members?.[0];
+    if (m) {
+      // 2) L'entreprise correspondante
+      const { data: c, error: err2 } = await supabase
+        .from("companies")
+        .select("id, name")
+        .eq("id", m.company_id)
+        .maybeSingle();
+
+      if (err2) {
+        setError("Lecture de l'entreprise impossible : " + err2.message);
+      } else if (!c) {
+        setError("Membre trouvé, mais l'entreprise n'est pas visible (règle d'accès).");
+      } else {
+        setCompany(c as Company);
+        setRole(m.role as Role);
+      }
     }
     setLoading(false);
   }, [userId]);
