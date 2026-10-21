@@ -7,7 +7,7 @@ import { useCompany } from "../company/CompanyContext";
 
 export default function CreateCompany() {
   const { signOut } = useAuth();
-  const { company, loading, refresh } = useCompany();
+  const { company, loading, error: loadError, refresh } = useCompany();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
@@ -34,7 +34,7 @@ export default function CreateCompany() {
     try {
       const { error: err } = await supabase.rpc("create_company", { p_name: name.trim() });
       if (err) {
-        setError("Impossible de créer l'entreprise. Réessayez.");
+        setError("Impossible de créer l'entreprise : " + err.message);
       } else {
         await refresh();
         navigate("/", { replace: true });
@@ -52,6 +52,14 @@ export default function CreateCompany() {
         <p className="muted">
           Vous en serez l'administrateur. Vous pourrez inviter votre équipe plus tard.
         </p>
+        {loadError && (
+          <div className="msg error">
+            <p>{loadError}</p>
+            <button type="button" className="link" onClick={refresh}>
+              Réessayer
+            </button>
+          </div>
+        )}
         <label className="field">
           <span>Nom de l'entreprise</span>
           <input
@@ -63,7 +71,7 @@ export default function CreateCompany() {
           />
         </label>
         {error && <p className="msg error">{error}</p>}
-        <button className="btn" type="submit" disabled={busy}>
+        <button className="btn" type="submit" disabled={busy || Boolean(loadError)}>
           {busy ? "Veuillez patienter…" : "Créer l'entreprise"}
         </button>
         <div className="links">
