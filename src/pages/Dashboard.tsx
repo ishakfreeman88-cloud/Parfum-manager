@@ -1,45 +1,59 @@
 import { useEffect, useState } from "react";
-import { supabase, isSupabaseConfigured } from "../lib/supabase";
+import { supabase } from "../lib/supabase";
 import { formatDZD, formatDateTime } from "../lib/format";
+import { useAuth } from "../auth/AuthContext";
+import { useCompany } from "../company/CompanyContext";
+import type { Role } from "../company/CompanyContext";
 
-type Status = "checking" | "ok" | "error" | "missing";
+const roleLabels: Record<Role, string> = {
+  admin: "Administrateur",
+  manager: "Gestionnaire",
+  seller: "Vendeur",
+  reader: "Lecteur",
+};
+
+type Check = "checking" | "ok" | "error";
 
 export default function Dashboard() {
-  const [status, setStatus] = useState<Status>("checking");
-  const [detail, setDetail] = useState("");
+  const { user } = useAuth();
+  const { company, role } = useCompany();
+  const [check, setCheck] = useState<Check>("checking");
+  const [profileName, setProfileName] = useState("");
 
+  // Vraie vérification : requête authentifiée sur la base, protégée par RLS.
   useEffect(() => {
-    async function check() {
-      if (!isSupabaseConfigured || !supabase) {
-        setStatus("missing");
-        return;
-      }
-      const { error } = await supabase.auth.getSession();
-      if (error) {
-        setStatus("error");
-        setDetail(error.message);
+    async function run() {
+      if (!supabase || !user) return;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (error || !data) {
+        setCheck("error");
       } else {
-        setStatus("ok");
+        setProfileName(data.full_name ?? "");
+        setCheck("ok");
       }
     }
-    check();
-  }, []);
-
-  const labels: Record<Status, string> = {
-    checking: "Vérification en cours…",
-    ok: "Connecté à Supabase",
-    error: "Erreur de connexion",
-    missing: "Variables Supabase non configurées",
-  };
+    run();
+  }, [user]);
 
   return (
     <section>
       <h1>Tableau de bord</h1>
 
       <div className="card">
-        <h2>Connexion à la base de données</h2>
-        <p className={"status " + status}>{labels[status]}</p>
-        {detail && <p className="muted">{detail}</p>}
+        <h2>Entreprise</h2>
+        <p><strong>{company?.name}</strong></p>
+        <p className="muted">
+          {profileName || user?.email} · {role ? roleLabels[role] : ""}
+        </p>
+        <p className={"status " + check}>
+          {check === "checking" && "Vérification de la base de données…"}
+          {check === "ok" && "Base de données : connexion et profil vérifiés"}
+          {check === "error" && "Profil introuvable dans la base de données"}
+        </p>
       </div>
 
       <div className="card">
