@@ -9,6 +9,8 @@ import Placeholder from "./pages/Placeholder";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import CreateCompany from "./pages/CreateCompany";
+import More from "./pages/More";
+import Team from "./pages/Team";
 
 export default function App() {
   return (
@@ -27,7 +29,8 @@ export default function App() {
                   <Route path="/fabrication" element={<Placeholder title="Fabrication" phase="Phases 10 à 14" />} />
                   <Route path="/ventes" element={<Placeholder title="Ventes" phase="Phases 15 à 18" />} />
                   <Route path="/finances" element={<Placeholder title="Finances" phase="Phases 19 à 22" />} />
-                  <Route path="/plus" element={<Placeholder title="Plus" phase="Rapports, rappels, équipe, paramètres" />} />
+                  <Route path="/plus" element={<More />} />
+                  <Route path="/equipe" element={<Team />} />
                 </Route>
               </Route>
             </Route>
