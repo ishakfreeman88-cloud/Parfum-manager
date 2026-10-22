@@ -13,7 +13,7 @@ function translateError(message: string): string {
   if (m.includes("already registered")) return "Cette adresse e-mail est déjà utilisée.";
   if (m.includes("rate limit")) return "Trop de tentatives. Réessayez dans quelques minutes.";
   if (m.includes("password")) return "Mot de passe refusé : utilisez au moins 8 caractères.";
-  return "Une erreur est survenue : " + message;
+    return "Une erreur est survenue. Réessayez.";
 }
 
 export default function Login() {
