@@ -97,3 +97,15 @@ h2 { font-size: 1rem; margin: 0 0 8px; color: var(--gold); }
 
 .links { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 12px; }
 .link { background: none; border: 0; color: var(--gold); font-size: 0.9rem; cursor: pointer; padding: 8px; }
+/* ---------- Phase 5b : équipe ---------- */
+.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+.row:first-of-type { border-top: 0; }
+.row-main { min-width: 0; flex: 1; }
+.row-main select, .field select { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 10px; font-size: 0.95rem; background: #fff; color: var(--ink); margin-top: 4px; }
+.btn-small { padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); font-size: 0.85rem; cursor: pointer; min-height: 40px; }
+.btn-small.danger { color: var(--err); border-color: #e3b9b5; }
+.btn-small:disabled { opacity: 0.5; cursor: not-allowed; }
+.code { font-family: ui-monospace, Consolas, monospace; font-size: 1.3rem; letter-spacing: 0.12em; word-break: break-all; margin: 6px 0; }
+.code-small { font-family: ui-monospace, Consolas, monospace; letter-spacing: 0.08em; word-break: break-all; }
+.menu-link { display: block; padding: 12px 0; color: var(--ink); text-decoration: none; font-weight: 600; }
+.mt { margin-top: 16px; }
