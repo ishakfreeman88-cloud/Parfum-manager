@@ -109,3 +109,11 @@ h2 { font-size: 1rem; margin: 0 0 8px; color: var(--gold); }
 .code-small { font-family: ui-monospace, Consolas, monospace; letter-spacing: 0.08em; word-break: break-all; }
 .menu-link { display: block; padding: 12px 0; color: var(--ink); text-decoration: none; font-weight: 600; }
 .mt { margin-top: 16px; }
+/* ---------- Phase 7a : stock ---------- */
+.field textarea { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 1rem; background: #fff; color: var(--ink); font-family: inherit; min-height: 70px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.72rem; background: #efe9dd; color: var(--muted); margin-left: 6px; }
+.badge.warn { background: #fbeceb; color: var(--err); }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.toolbar input, .toolbar select { flex: 1; min-width: 120px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; font-size: 0.95rem; background: #fff; color: var(--ink); }
+.check { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--muted); margin: 6px 0 12px; }
+.back-link { display: inline-block; margin-bottom: 8px; color: var(--gold); text-decoration: none; font-size: 0.9rem; }
