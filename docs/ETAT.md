@@ -1,45 +1,53 @@
 # CARNET DE BORD : Parfum Manager
 
 ## Dernière phase terminée
-Phase 5b : écran Équipe (inviter par code, rôles, retrait), rejoindre une entreprise par code.
-Bloc A (fondations, comptes, sécurité, équipe) terminé, sous réserve des tests ci-dessous.
+Phase 7a : écrans fournisseurs et matières premières (liste, ajout, modification, archivage).
+Phases 0 à 6 validées.
 
 ## Prochaine phase
-Phase 6 : SQL du stock : fournisseurs, matières premières, unités et conversions, mouvements de stock.
+Phase 7b : stock d'ouverture, mouvements manuels (correction, perte, retour fournisseur),
+historique des mouvements, alertes de stock faible sur l'accueil.
 
 ## Stack
 React 18 + TypeScript + Vite 5, react-router-dom 6 (HashRouter), supabase-js 2 (flowType pkce).
-Supabase gratuit, dépôt GitHub public, GitHub Pages via Actions.
+Supabase gratuit (NOUVEAU projet depuis la fermeture de l'ancien compte), dépôt GitHub public, GitHub Pages via Actions.
 Site : https://ishakfreeman88-cloud.github.io/Parfum-manager/
-Entreprise de test : RoyalStoreDz (id 039cbb14-6512-4cf2-9c53-19acca7fc6a9)
+Secrets GitHub : VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY (valeurs du projet Supabase actuel)
+Supabase > Authentication > URL Configuration : Site URL et Redirect URL = adresse du site (avec P majuscule)
 
 ## Décisions
 - base Vite = "/Parfum-manager/"
-- Invitation par CODE à usage unique (16 caractères, 7 jours), transmis hors application
-- Un utilisateur = une entreprise active
-- Écritures sur company_members, invitations, audit_logs uniquement par fonctions security definer
-- Dernier administrateur protégé ; membres révoqués conservés (status revoked)
-- Messages SQL en français (code P0001) affichés tels quels ; autres erreurs : message générique
-- Un admin ne peut pas modifier ni retirer sa propre ligne depuis l'écran (protection)
-- Migrations exécutées à la main dans Supabase > SQL Editor
-- Fichiers de l'application : src/{auth,company,components,lib,pages,styles}
+- Invitation par CODE à usage unique ; un utilisateur = une entreprise active
+- Écritures sensibles uniquement par fonctions security definer
+- STOCK : quantité et coût moyen pondéré en unité de BASE (ml, g, unit) ; cl exclu ; volume<->masse refusé
+- quantity_on_hand / avg_cost / unit non modifiables directement (droits par colonne)
+- stock_movements sans modification ni suppression ; correction = nouveau mouvement
+- Anti-doublon : idempotency_key unique par entreprise ; verrou de ligne sur la matière
+- Catalogue : création/modification admin et gestionnaire ; lecture tous les membres
+- Écrans : /stock, /stock/matieres, /stock/fournisseurs ; archivage au lieu de suppression
+- Coût moyen masqué aux vendeurs dans l'écran (confort seulement, la base reste lisible : voir points en attente)
+- Migrations exécutées à la main dans Supabase > SQL Editor, en blocs courts (< 150 lignes)
 
-## Migrations appliquées
+## Migrations appliquées (projet actuel)
 - 20261020000100_phase2_base.sql
 - 20261020000200_phase3_rls.sql
-- 20261020000300_phase5a_team.sql (tests C et D validés)
-
-## Incidents résolus
-- "Invalid API key" : build/cache, résolu en navigation privée après nouveau build
-- Entreprise invisible : le SQL de la phase 3 n'avait pas été exécuté
-- Phase 5a non appliquée au premier essai : vérifier le test A (6 fonctions, 7 politiques) après chaque migration
-- Lignes grises "!" dans Actions = builds annulés par un commit plus récent (normal)
+- 20261020000300_phase5a_team.sql
+- 20261020000400_phase6_stock.sql (exécutée en 3 parties)
 
 ## Règle de travail
-Après chaque migration SQL : lancer le test de comptage (fonctions/politiques) avant de continuer.
+Après chaque migration SQL : test de comptage avant de continuer.
+Comptage actuel attendu : 9 tables, 16 fonctions, 15 politiques.
+
+## Incidents résolus
+- "Invalid API key" : build/cache ; résolu en navigation privée après nouveau build
+- Entreprise invisible : SQL de la phase 3 non exécuté
+- Script coupé au collage : découper en parties courtes
+- Compte Supabase fermé : nouveau projet, migrations rejouées, secrets GitHub remplacés
+- E-mail de confirmation vers localhost : Site URL à corriger dans Supabase
 
 ## Points en attente
-- Supprimer l'entreprise doublon 88352a79-e41b-4e93-a8c5-8653513e6ad2 (sans membre)
-- Tests de la phase 5b à cocher (invitation, rôle, retrait, audit, isolation)
-- Login.tsx : message d'erreur technique à simplifier (optionnel indiqué en 5b)
+- SAUVEGARDE : prévoir un export CSV/SQL régulier AVANT la saisie de vraies données (prioritaire)
+- Les coûts (avg_cost) sont lisibles par tous les membres, vendeurs compris : à restreindre en phase 25
+- Login.tsx : message d'erreur technique à simplifier (optionnel)
 - Noter l'état de "Confirm email" dans Supabase
+- Pas d'unités personnalisées ; pas d'audit des modifications de fiches (les mouvements, eux, sont tracés)
