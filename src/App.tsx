@@ -11,6 +11,9 @@ import ResetPassword from "./pages/ResetPassword";
 import CreateCompany from "./pages/CreateCompany";
 import More from "./pages/More";
 import Team from "./pages/Team";
+import Stock from "./pages/Stock";
+import Suppliers from "./pages/Suppliers";
+import Materials from "./pages/Materials";
 
 export default function App() {
   return (
@@ -25,7 +28,9 @@ export default function App() {
               <Route element={<RequireCompany />}>
                 <Route element={<Layout />}>
                   <Route path="/" element={<Dashboard />} />
-                  <Route path="/stock" element={<Placeholder title="Stock" phase="Phases 6 à 9" />} />
+                  <Route path="/stock" element={<Stock />} />
+                  <Route path="/stock/matieres" element={<Materials />} />
+                  <Route path="/stock/fournisseurs" element={<Suppliers />} />
                   <Route path="/fabrication" element={<Placeholder title="Fabrication" phase="Phases 10 à 14" />} />
                   <Route path="/ventes" element={<Placeholder title="Ventes" phase="Phases 15 à 18" />} />
                   <Route path="/finances" element={<Placeholder title="Finances" phase="Phases 19 à 22" />} />
