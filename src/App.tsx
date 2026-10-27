@@ -16,6 +16,7 @@ import Suppliers from "./pages/Suppliers";
 import Materials from "./pages/Materials";
 import Movements from "./pages/Movements";
 import NewMovement from "./pages/NewMovement";
+import Backup from "./pages/Backup";
 
 export default function App() {
   return (
@@ -39,6 +40,7 @@ export default function App() {
                   <Route path="/ventes" element={<Placeholder title="Ventes" phase="Phases 15 à 18" />} />
                   <Route path="/finances" element={<Placeholder title="Finances" phase="Phases 19 à 22" />} />
                   <Route path="/plus" element={<More />} />
+                  <Route path="/plus/sauvegarde" element={<Backup />} />
                   <Route path="/equipe" element={<Team />} />
                 </Route>
               </Route>
