@@ -6,6 +6,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useCompany } from "../company/CompanyContext";
 import type { Role } from "../company/CompanyContext";
 import { formatQty } from "../lib/units";
+import SupplierDebts from "../components/SupplierDebts";
 
 const roleLabels: Record<Role, string> = {
   admin: "Administrateur",
@@ -76,7 +77,7 @@ export default function Dashboard() {
   return (
     <section>
       <h1>Tableau de bord</h1>
-
+      <SupplierDebts />
       <div className="card">
         <h2>Entreprise</h2>
         <p><strong>{company?.name}</strong></p>
