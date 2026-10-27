@@ -14,6 +14,8 @@ import Team from "./pages/Team";
 import Stock from "./pages/Stock";
 import Suppliers from "./pages/Suppliers";
 import Materials from "./pages/Materials";
+import Movements from "./pages/Movements";
+import NewMovement from "./pages/NewMovement";
 
 export default function App() {
   return (
@@ -31,6 +33,8 @@ export default function App() {
                   <Route path="/stock" element={<Stock />} />
                   <Route path="/stock/matieres" element={<Materials />} />
                   <Route path="/stock/fournisseurs" element={<Suppliers />} />
+                  <Route path="/stock/mouvements" element={<Movements />} />
+                  <Route path="/stock/mouvements/nouveau" element={<NewMovement />} />
                   <Route path="/fabrication" element={<Placeholder title="Fabrication" phase="Phases 10 à 14" />} />
                   <Route path="/ventes" element={<Placeholder title="Ventes" phase="Phases 15 à 18" />} />
                   <Route path="/finances" element={<Placeholder title="Finances" phase="Phases 19 à 22" />} />
