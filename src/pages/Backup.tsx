@@ -181,6 +181,16 @@ export default function Backup() {
         ) : (
           <p className="muted">Aucun export enregistré sur cet appareil.</p>
         )}
+        
+                <button className="btn" type="button" disabled={Boolean(busy)} onClick={() => run("pur", () => exportPurchases(supabase!, company!.id))}>
+          {busy === "pur" ? "Veuillez patienter…" : "Achats"}
+        </button>
+        <button className="btn" type="button" disabled={Boolean(busy)} onClick={() => run("pul", () => exportPurchaseLines(supabase!, company!.id))}>
+          {busy === "pul" ? "Veuillez patienter…" : "Lignes d'achat"}
+        </button>
+        <button className="btn" type="button" disabled={Boolean(busy)} onClick={() => run("pup", () => exportPurchasePayments(supabase!, company!.id))}>
+          {busy === "pup" ? "Veuillez patienter…" : "Paiements fournisseurs"}
+        </button>
         <p className="muted">
           Faites un export toutes les semaines et gardez les fichiers hors de l'application (ordinateur, Drive).
         </p>
