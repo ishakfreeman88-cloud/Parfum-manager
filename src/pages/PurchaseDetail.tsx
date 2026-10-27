@@ -319,4 +319,98 @@ export default function PurchaseDetail() {
             </div>
           );
         })}
-        <div className="sum-row"><span>Lignes</span><span>{formatDZD(purchase.s
+        <div className="sum-row"><span>Lignes</span><span>{formatDZD(purchase.subtotal)}</span></div>
+        <div className="sum-row"><span>Remise</span><span>− {formatDZD(purchase.discount)}</span></div>
+        <div className="sum-row"><span>Frais</span><span>+ {formatDZD(purchase.extra_fees)}</span></div>
+        <div className="sum-row total"><span>Total</span><span>{formatDZD(purchase.total)}</span></div>
+        <div className="sum-row"><span>Payé</span><span>{formatDZD(purchase.amount_paid)}</span></div>
+        {!cancelled && (
+          <div className={"sum-row" + (purchase.amount_due > 0 ? " qty-neg" : "")}>
+            <span>Reste dû</span><span>{formatDZD(purchase.amount_due)}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="card">
+        <h2>Paiements</h2>
+        {payments.length === 0 && <p className="muted">Aucun paiement enregistré.</p>}
+        {payments.map((p) => (
+          <div className="row" key={p.id}>
+            <div className="row-main">
+              <strong>{formatDZD(p.amount)}</strong>
+              <div className="muted">
+                {frDate(p.paid_at)} · {p.method}
+                {p.created_by ? " · " + (users[p.created_by] || "Ancien membre") : ""}
+              </div>
+              {p.notes && <div className="muted">{p.notes}</div>}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {canEdit && !cancelled && purchase.amount_due > 0 && (
+        <form className="card" onSubmit={onPay}>
+          <h2>Enregistrer un paiement</h2>
+          <label className="field">
+            <span>Montant en DA (reste dû : {formatDZD(purchase.amount_due)})</span>
+            <input value={amount} inputMode="decimal" onChange={(e) => setAmount(e.target.value)} />
+          </label>
+          <button type="button" className="btn-small" onClick={() => setAmount(String(purchase.amount_due))}>
+            Solder le reste dû
+          </button>
+          <label className="field" style={{ marginTop: 10 }}>
+            <span>Date du paiement</span>
+            <input type="date" value={payDate} onChange={(e) => setPayDate(e.target.value)} required />
+          </label>
+          <label className="field">
+            <span>Mode de paiement</span>
+            <select value={method} onChange={(e) => setMethod(e.target.value)}>
+              {methods.map((m) => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
+          </label>
+          <label className="field">
+            <span>Notes</span>
+            <input value={payNotes} onChange={(e) => setPayNotes(e.target.value)} />
+          </label>
+          <button className="btn" type="submit" disabled={busy}>
+            {busy ? "Veuillez patienter…" : "Enregistrer le paiement"}
+          </button>
+        </form>
+      )}
+
+      {canEdit && !cancelled && purchase.amount_paid === 0 && (
+        <div className="card">
+          <h2>Annuler cet achat</h2>
+          {!showCancel ? (
+            <>
+              <p className="muted">
+                Possible seulement sans paiement, et si le stock reçu est encore disponible.
+              </p>
+              <button type="button" className="btn-small danger" onClick={() => setShowCancel(true)}>
+                Annuler l'achat
+              </button>
+            </>
+          ) : (
+            <form onSubmit={onCancel}>
+              <label className="field">
+                <span>Motif de l'annulation</span>
+                <input value={reason} onChange={(e) => setReason(e.target.value)} />
+              </label>
+              <button className="btn" type="submit" disabled={busy}>
+                {busy ? "Veuillez patienter…" : "Confirmer l'annulation"}
+              </button>
+              <div className="links">
+                <button type="button" className="link" onClick={() => setShowCancel(false)}>Renoncer</button>
+              </div>
+            </form>
+          )}
+        </div>
+      )}
+      {canEdit && !cancelled && purchase.amount_paid > 0 && (
+        <p className="muted">Cet achat a des paiements : il ne peut plus être annulé.</p>
+      )}
+    </section>
+  );
+}
