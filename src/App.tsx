@@ -19,6 +19,7 @@ import NewMovement from "./pages/NewMovement";
 import Backup from "./pages/Backup";
 import Purchases from "./pages/Purchases";
 import NewPurchase from "./pages/NewPurchase";
+import PurchaseDetail from "./pages/PurchaseDetail";
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
                   <Route path="/stock/mouvements/nouveau" element={<NewMovement />} />
                   <Route path="/stock/achats" element={<Purchases />} />
                   <Route path="/stock/achats/nouveau" element={<NewPurchase />} />
+                  <Route path="/stock/achats/:id" element={<PurchaseDetail />} />
                   <Route path="/fabrication" element={<Placeholder title="Fabrication" phase="Phases 10 à 14" />} />
                   <Route path="/ventes" element={<Placeholder title="Ventes" phase="Phases 15 à 18" />} />
                   <Route path="/finances" element={<Placeholder title="Finances" phase="Phases 19 à 22" />} />
