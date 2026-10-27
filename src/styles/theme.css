@@ -117,3 +117,6 @@ h2 { font-size: 1rem; margin: 0 0 8px; color: var(--gold); }
 .toolbar input, .toolbar select { flex: 1; min-width: 120px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; font-size: 0.95rem; background: #fff; color: var(--ink); }
 .check { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--muted); margin: 6px 0 12px; }
 .back-link { display: inline-block; margin-bottom: 8px; color: var(--gold); text-decoration: none; font-size: 0.9rem; }
+/* ---------- Phase 7b : mouvements ---------- */
+.qty-pos { color: var(--ok); font-weight: 600; }
+.qty-neg { color: var(--err); font-weight: 600; }
