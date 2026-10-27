@@ -127,3 +127,6 @@ h2 { font-size: 1rem; margin: 0 0 8px; color: var(--gold); }
 .btn-link { display: block; text-align: center; text-decoration: none; box-sizing: border-box; }
 .sum-row { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; }
 .sum-row.total { font-weight: 700; border-top: 1px solid var(--line); margin-top: 4px; padding-top: 8px; }
+/* ---------- Phase 8b-2 : détail d'un achat ---------- */
+.card-link { color: var(--ink); text-decoration: none; }
+.card-link strong { border-bottom: 1px dotted var(--gold); }
