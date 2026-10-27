@@ -10,6 +10,9 @@ export default function Stock() {
       <div className="card">
         <Link className="menu-link" to="/stock/matieres">Matières premières</Link>
         <Link className="menu-link" to="/stock/fournisseurs">Fournisseurs</Link>
+        {role !== "seller" && (
+          <Link className="menu-link" to="/stock/achats">Achats</Link>
+        )}
         {canMove && (
           <Link className="menu-link" to="/stock/mouvements/nouveau">Nouveau mouvement</Link>
         )}
@@ -18,7 +21,7 @@ export default function Stock() {
         )}
       </div>
       <div className="card empty">
-        <p className="muted">Achats et produits finis : à venir.</p>
+        <p className="muted">Produits finis : à venir.</p>
       </div>
     </section>
   );
