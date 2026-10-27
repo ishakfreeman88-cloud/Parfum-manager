@@ -140,7 +140,7 @@ export default function Purchases() {
 
       {rows.map((p) => (
         <div className="card" key={p.id}>
-          <strong>Achat n° {p.purchase_no}</strong>
+        <Link className="card-link" to={"/stock/achats/" + p.id}><strong>Achat n° {p.purchase_no}</strong></Link>
           {p.status === "cancelled" ? (
             <span className="badge warn">Annulé</span>
           ) : (
