@@ -53,6 +53,7 @@ export default function App() {
                   <Route path="/fabrication/formats" element={<Formats />} />
                   <Route path="/fabrication/recettes" element={<Recipes />} />
                   <Route path="/fabrication/recettes/nouveau" element={<RecipeForm />} />
+                  <Route path="/fabrication/recettes/:id" element={<RecipeDetail />} />
                   <Route path="/fabrication/recettes/:id/version" element={<RecipeForm />} />
                   <Route path="/ventes" element={<Placeholder title="Ventes" phase="Phases 15 à 18" />} />
                   <Route path="/finances" element={<Placeholder title="Finances" phase="Phases 19 à 22" />} />
