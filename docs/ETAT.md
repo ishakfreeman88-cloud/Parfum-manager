@@ -1,14 +1,15 @@
 # CARNET DE BORD : Parfum Manager
 
 ## Dernière phase terminée
-Phase 11a : menu Fabrication, écrans Parfums et Formats.
-Phases 0 à 10a livrées. Résultats à confirmer : 7a, 7b (intégrité), 7c (export), 8b (build vert),
-10a (comptage 17/21/28, tests B et C), 11a.
+Phase 11b-1 : liste des recettes, création d'une recette, ajout d'une nouvelle version.
+Phases 0 à 11a livrées. Résultats à confirmer : 7a, 7b (intégrité), 7c (export), 8b (build vert),
+10a (comptage 17/21/28, tests B et C), 11a, 11b-1.
 
 ## Prochaine phase
-Phase 11b : écrans des recettes (liste par parfum, création d'une recette, nouvelle version, consultation
-des versions précédentes, calcul des quantités pour un volume donné, aucun accès pour vendeur et lecteur).
-Puis 12 : fonction SQL transactionnelle de fabrication (vérification du stock, consommation, lot).
+Phase 11b-2 : détail d'une recette (/fabrication/recettes/:id), consultation des anciennes versions,
+calcul des quantités pour un volume donné, renommage et archivage d'une recette.
+Puis phase 12 : fonction SQL transactionnelle de fabrication (vérification du stock, consommation,
+lot, coût du lot et coût unitaire au coût moyen pondéré).
 
 ## Stack
 React 18 + TypeScript + Vite 5, react-router-dom 6 (HashRouter), supabase-js 2 (flowType pkce).
@@ -33,16 +34,19 @@ Supabase > Authentication > URL Configuration : Site URL et Redirect URL = adres
 - RECETTES : recette (nom, parfum) -> VERSIONS immuables ; modifier = nouvelle version ; version courante =
   numéro le plus élevé ; une version = volume cible, rendement théorique, instructions, notes, date d'entrée
   en vigueur, ingrédients (quantité dans l'unité de BASE, pour le volume cible)
-- Recette : flacons, bouchons, étiquettes, boîtes REFUSÉS (conditionnement, phase 14) ; une matière une seule
-  fois par version ; 1 à 50 ingrédients ; aucune conversion volume<->masse
+- Recette : flacons, bouchons, étiquettes, boîtes REFUSÉS (conditionnement, phase 14) ; filtrés aussi dans
+  l'écran ; une matière une seule fois par version ; 1 à 50 ingrédients ; aucune conversion volume<->masse
+- Écran recette : la nouvelle version reprend les quantités saisies de la version précédente ; une matière
+  archivée entre-temps doit être remplacée avant l'enregistrement ; la somme des ingrédients en ml est
+  indicative (le rendement est saisi à la main)
 - Recettes lisibles et créables par admin et gestionnaire uniquement ; parfums et formats lisibles par tous
   les membres, modifiables par admin et gestionnaire
-- FORMATS : volume TOUJOURS en ml (volume_ml), non modifiable après création, un seul format par volume ;
-  nom par défaut "<volume> ml"
-- PARFUMS : nom unique (insensible à la casse) et référence unique par entreprise ; archivage, jamais de suppression
+- FORMATS : volume TOUJOURS en ml (volume_ml), non modifiable après création, un seul format par volume
+- PARFUMS : nom unique (insensible à la casse) et référence unique par entreprise ; archivage
 - Écrans existants : /stock, /stock/matieres, /stock/fournisseurs, /stock/mouvements,
   /stock/mouvements/nouveau, /stock/achats, /stock/achats/nouveau, /stock/achats/:id,
-  /fabrication, /fabrication/parfums, /fabrication/formats, /plus, /plus/sauvegarde, /equipe
+  /fabrication, /fabrication/parfums, /fabrication/formats, /fabrication/recettes,
+  /fabrication/recettes/nouveau, /fabrication/recettes/:id/version, /plus, /plus/sauvegarde, /equipe
 - Migrations exécutées à la main dans Supabase > SQL Editor, en parties courtes (< 150 lignes)
 
 ## Migrations appliquées (projet actuel)
@@ -51,8 +55,8 @@ Supabase > Authentication > URL Configuration : Site URL et Redirect URL = adres
 - 20261020000300_phase5a_team.sql
 - 20261020000400_phase6_stock.sql (3 parties)
 - 20261020000500_phase8a_purchases.sql (3 parties ; comptage 12/20/18 constaté)
-- 20261020000600_phase10a_recipes.sql (3 parties ; à exécuter ou à confirmer : 17/21/28)
-Aucune nouvelle migration en 11a.
+- 20261020000600_phase10a_recipes.sql (3 parties ; contrôle préalable validé, exécution à confirmer : 17/21/28)
+Aucune nouvelle migration en 11a et 11b-1.
 
 ## Règle de travail
 Après chaque migration SQL : test de comptage avant de continuer.
@@ -77,6 +81,8 @@ collage : comparer sa dernière ligne avec la fin du code fourni, utiliser le bo
 - Les coûts sont lisibles par tous les membres autorisés ; vendeur masqué seulement à l'affichage (phase 25)
 - Les exports ne contiennent pas encore : membres, invitations, journal d'audit, parfums, formats, recettes
 - Une recette ne contrôle pas que la somme des volumes égale le volume cible (rendement saisi à la main)
+- Liste des recettes : charge toutes les versions de l'entreprise (lecture par pages de 1000) ; à optimiser
+  si le nombre de versions devient très grand
 - Login.tsx : message d'erreur technique à simplifier (optionnel)
 - Confirm email Supabase : noter l'état ; vérifier Database > Backups du plan gratuit
 - Décider du champ "montant total de la ligne" pour les achats
