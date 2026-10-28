@@ -23,6 +23,8 @@ import PurchaseDetail from "./pages/PurchaseDetail";
 import Fabrication from "./pages/Fabrication";
 import Perfumes from "./pages/Perfumes";
 import Formats from "./pages/Formats";
+import Recipes from "./pages/Recipes";
+import RecipeForm from "./pages/RecipeForm";
 
 export default function App() {
   return (
