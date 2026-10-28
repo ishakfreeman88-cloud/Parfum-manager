@@ -5,7 +5,7 @@ import { useCompany } from "../company/CompanyContext";
 import { formatQty } from "../lib/units";
 import { fetchAll } from "../lib/csv";
 
-type Recipe = { id: string; name: string; perfume_id: string };
+type Recipe = { id: string; name: string; perfume_id: string; status: "active" | "archived" };
 type Ver = {
   recipe_id: string;
   version_no: number;
@@ -25,6 +25,7 @@ export default function Recipes() {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -32,8 +33,8 @@ export default function Recipes() {
       const db = supabase;
       try {
         const [r, p, vers] = await Promise.all([
-          db.from("recipes").select("id, name, perfume_id")
-            .eq("company_id", company.id).eq("status", "active").order("name"),
+          db.from("recipes").select("id, name, perfume_id, status")
+            .eq("company_id", company.id).order("name"),
           db.from("perfumes").select("id, name").eq("company_id", company.id),
           fetchAll<Ver>((a, b) =>
             db.from("recipe_versions")
@@ -75,6 +76,8 @@ export default function Recipes() {
     );
   }
 
+  const visible = recipes.filter((r) => showArchived || r.status === "active");
+
   return (
     <section>
       <Link className="back-link" to="/fabrication">← Fabrication</Link>
@@ -82,29 +85,39 @@ export default function Recipes() {
       {error && <p className="msg error">{error}</p>}
       <Link className="btn btn-link" to="/fabrication/recettes/nouveau">Nouvelle recette</Link>
 
+      <label className="check" style={{ marginTop: 12 }}>
+        <input type="checkbox" checked={showArchived} onChange={(e) => setShowArchived(e.target.checked)} />
+        Afficher les recettes archivées
+      </label>
+
       {loading && <p className="muted">Chargement…</p>}
-      {!loading && recipes.length === 0 && !error && (
-        <div className="card empty" style={{ marginTop: 12 }}>
+      {!loading && visible.length === 0 && !error && (
+        <div className="card empty">
           <p className="muted">Aucune recette enregistrée.</p>
         </div>
       )}
 
-      {recipes.map((r) => {
+      {visible.map((r) => {
         const v = latest[r.id];
         return (
-          <div className="card" key={r.id} style={{ marginTop: 12 }}>
-            <strong>{r.name}</strong>
+          <div className="card" key={r.id}>
+            <Link className="card-link" to={"/fabrication/recettes/" + r.id}>
+              <strong>{r.name}</strong>
+            </Link>
+            {r.status === "archived" && <span className="badge">Archivée</span>}
             <div className="muted">Parfum : {perfumes[r.perfume_id] ?? "—"}</div>
             {v && (
               <div className="muted">
                 Version {v.version_no} (sur {counts[r.id]}) · volume cible {formatQty(Number(v.target_volume_ml), "ml")} · en vigueur depuis le {frDate(v.effective_date)}
               </div>
             )}
-            <div style={{ marginTop: 8 }}>
-              <Link className="btn-small" to={"/fabrication/recettes/" + r.id + "/version"}>
-                Nouvelle version
-              </Link>
-            </div>
+            {r.status === "active" && (
+              <div style={{ marginTop: 8 }}>
+                <Link className="btn-small" to={"/fabrication/recettes/" + r.id + "/version"}>
+                  Nouvelle version
+                </Link>
+              </div>
+            )}
           </div>
         );
       })}
