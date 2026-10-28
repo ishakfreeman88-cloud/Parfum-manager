@@ -45,8 +45,9 @@ export default function App() {
                   <Route path="/stock/achats" element={<Purchases />} />
                   <Route path="/stock/achats/nouveau" element={<NewPurchase />} />
                   <Route path="/stock/achats/:id" element={<PurchaseDetail />} />
-                  <Route path="/fabrication" element={<Placeholder title="Fabrication" phase="Phases 10 à 14" />} />
-                  <Route path="/ventes" element={<Placeholder title="Ventes" phase="Phases 15 à 18" />} />
+                  <Route path="/fabrication" element={<Fabrication />} />
+                  <Route path="/fabrication/parfums" element={<Perfumes />} />
+                  <Route path="/fabrication/formats" element={<Formats />} />                  <Route path="/ventes" element={<Placeholder title="Ventes" phase="Phases 15 à 18" />} />
                   <Route path="/finances" element={<Placeholder title="Finances" phase="Phases 19 à 22" />} />
                   <Route path="/plus" element={<More />} />
                   <Route path="/plus/sauvegarde" element={<Backup />} />
