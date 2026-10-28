@@ -25,6 +25,7 @@ import Perfumes from "./pages/Perfumes";
 import Formats from "./pages/Formats";
 import Recipes from "./pages/Recipes";
 import RecipeForm from "./pages/RecipeForm";
+import RecipeDetail from "./pages/RecipeDetail";
 
 export default function App() {
   return (
