@@ -20,6 +20,9 @@ import Backup from "./pages/Backup";
 import Purchases from "./pages/Purchases";
 import NewPurchase from "./pages/NewPurchase";
 import PurchaseDetail from "./pages/PurchaseDetail";
+import Fabrication from "./pages/Fabrication";
+import Perfumes from "./pages/Perfumes";
+import Formats from "./pages/Formats";
 
 export default function App() {
   return (
