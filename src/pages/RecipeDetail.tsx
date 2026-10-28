@@ -211,7 +211,6 @@ export default function RecipeDetail() {
       </section>
     );
   }
-
   const version = versions.find((v) => v.id === selected);
   const isCurrent = versions.length > 0 && versions[0].id === selected;
   const target = version?.target_volume_ml ?? 0;
@@ -221,3 +220,170 @@ export default function RecipeDetail() {
 
   const calc = ingredients.map((i) => {
     const mat = mats[i.material_id];
+    const need = i.quantity_base * factor;
+    return { ing: i, mat, need, enough: mat ? need <= mat.quantity_on_hand : false };
+  });
+  const costKnown = calc.length > 0 && calc.every((r) => r.mat);
+  const totalCost = calc.reduce((s, r) => s + (r.mat ? r.need * r.mat.avg_cost : 0), 0);
+
+  return (
+    <section>
+      <Link className="back-link" to="/fabrication/recettes">← Recettes</Link>
+      <h1>{recipe.name}</h1>
+      {error && <p className="msg error">{error}</p>}
+      {info && <p className="msg ok">{info}</p>}
+
+      <div className="card">
+        <div className="muted">Parfum : {perfumeName || "—"}</div>
+        {recipe.status === "archived" && <span className="badge">Archivée</span>}
+
+        {renaming ? (
+          <form onSubmit={onRename} style={{ marginTop: 8 }}>
+            <label className="field">
+              <span>Nouveau nom</span>
+              <input value={newName} maxLength={120} onChange={(e) => setNewName(e.target.value)} />
+            </label>
+            <button className="btn" type="submit" disabled={busy}>
+              {busy ? "Veuillez patienter…" : "Enregistrer le nom"}
+            </button>
+            <div className="links">
+              <button type="button" className="link" onClick={() => setRenaming(false)}>Annuler</button>
+            </div>
+          </form>
+        ) : (
+          <div style={{ marginTop: 8 }}>
+            <button
+              type="button"
+              className="btn-small"
+              disabled={busy}
+              onClick={() => {
+                setNewName(recipe.name);
+                setRenaming(true);
+              }}
+            >
+              Renommer
+            </button>{" "}
+            {recipe.status === "active" ? (
+              <>
+                <Link className="btn-small" to={"/fabrication/recettes/" + recipe.id + "/version"}>
+                  Nouvelle version
+                </Link>{" "}
+                <button
+                  type="button"
+                  className="btn-small danger"
+                  disabled={busy}
+                  onClick={() => {
+                    if (window.confirm("Archiver cette recette ? Ses versions et l'historique sont conservés.")) setStatus("archived");
+                  }}
+                >
+                  Archiver
+                </button>
+              </>
+            ) : (
+              <button type="button" className="btn-small" disabled={busy} onClick={() => setStatus("active")}>
+                Restaurer
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {versions.length === 0 && (
+        <div className="card empty">
+          <p className="muted">Cette recette n'a aucune version.</p>
+        </div>
+      )}
+
+      {version && (
+        <>
+          <div className="card">
+            <label className="field">
+              <span>Version affichée</span>
+              <select value={selected} onChange={(e) => { setSelected(e.target.value); setWant(""); }}>
+                {versions.map((v, idx) => (
+                  <option key={v.id} value={v.id}>
+                    Version {v.version_no}
+                    {idx === 0 ? " (courante)" : ""} · depuis le {frDate(v.effective_date)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {!isCurrent && (
+              <p className="msg error">
+                Ancienne version : elle reste conservée pour les fabrications déjà faites.
+              </p>
+            )}
+            <p>
+              Volume cible : <strong>{formatQty(version.target_volume_ml, "ml")}</strong> · Rendement théorique :{" "}
+              <strong>{formatQty(version.expected_yield_ml, "ml")}</strong>
+            </p>
+            {version.instructions && <p>{version.instructions}</p>}
+            {version.notes && <p className="muted">{version.notes}</p>}
+          </div>
+
+          <div className="card">
+            <h2>Ingrédients de cette version</h2>
+            {ingredients.map((i) => (
+              <div className="row" key={i.id}>
+                <div className="row-main">
+                  <strong>{mats[i.material_id]?.name ?? "Matière"}</strong>
+                  {mats[i.material_id]?.status === "archived" && <span className="badge">Archivée</span>}
+                  <div className="muted">
+                    {i.quantity_input} {i.unit_input === "unit" ? "unité(s)" : i.unit_input} pour {formatQty(version.target_volume_ml, "ml")}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="card">
+            <h2>Calcul des quantités</h2>
+            <label className="field">
+              <span>Volume à fabriquer en ml (par défaut : {version.target_volume_ml})</span>
+              <input
+                value={want}
+                inputMode="decimal"
+                placeholder={String(version.target_volume_ml)}
+                onChange={(e) => setWant(e.target.value)}
+              />
+            </label>
+            {!validWant && <p className="msg error">Saisissez un volume valide en millilitres.</p>}
+            {validWant && (
+              <>
+                <p className="muted">
+                  Les quantités sont proportionnelles (× {Math.round(factor * 10000) / 10000}). Rendement attendu :{" "}
+                  {formatQty(Math.round(version.expected_yield_ml * factor * 1000) / 1000, "ml")}.
+                </p>
+                {calc.map((r) => (
+                  <div className="row" key={r.ing.id}>
+                    <div className="row-main">
+                      <strong>{r.mat?.name ?? "Matière"}</strong>
+                      <div>
+                        Besoin : <strong>{r.mat ? formatQty(r.need, r.mat.unit) : "—"}</strong>
+                      </div>
+                      {r.mat && (
+                        <div className="muted">
+                          Stock : {formatQty(r.mat.quantity_on_hand, r.mat.unit)}
+                          {r.enough ? "" : " · insuffisant"}
+                        </div>
+                      )}
+                    </div>
+                    {r.mat && !r.enough && <span className="badge warn">Manque</span>}
+                  </div>
+                ))}
+                {costKnown && (
+                  <p>
+                    Coût estimé des matières : <strong>{formatDZD(totalCost)}</strong>
+                  </p>
+                )}
+                <p className="muted">
+                  Estimation au coût moyen actuel du stock. Elle ne comprend ni flacons, ni emballages, ni pertes, et n'engage rien : le contrôle définitif du stock se fait à la fabrication.
+                </p>
+              </>
+            )}
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
