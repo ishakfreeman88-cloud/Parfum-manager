@@ -28,6 +28,7 @@ import RecipeForm from "./pages/RecipeForm";
 import RecipeDetail from "./pages/RecipeDetail";
 import Batches from "./pages/Batches";
 import NewBatch from "./pages/NewBatch";
+import BatchDetail from "./pages/BatchDetail";
 
 export default function App() {
   return (
@@ -59,6 +60,7 @@ export default function App() {
                   <Route path="/fabrication/recettes/:id/version" element={<RecipeForm />} />
                   <Route path="/fabrication/lots" element={<Batches />} />
                   <Route path="/fabrication/lots/nouveau" element={<NewBatch />} />
+                  <Route path="/fabrication/lots/:id" element={<BatchDetail />} />
                   <Route path="/ventes" element={<Placeholder title="Ventes" phase="Phases 15 à 18" />} />
                   <Route path="/finances" element={<Placeholder title="Finances" phase="Phases 19 à 22" />} />
                   <Route path="/plus" element={<More />} />
