@@ -140,7 +140,7 @@ export default function Batches() {
 
       {rows.map((b) => (
         <div className="card" key={b.id} style={{ marginTop: 12 }}>
-          <strong>Lot n° {b.batch_no}</strong>
+          <Link className="card-link" to={"/fabrication/lots/" + b.id}><strong>Lot n° {b.batch_no}</strong></Link>
           <div className="muted">
             {frDate(b.produced_date)} · {perfumes[b.perfume_id] ?? "—"} · {recipes[b.recipe_id] ?? "—"}
             {versions[b.version_id] ? " (version " + versions[b.version_id] + ")" : ""}
