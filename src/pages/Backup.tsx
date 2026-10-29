@@ -7,6 +7,7 @@ import { materialTypes } from "../lib/units";
 import { movementLabels } from "../lib/movements";
 import { formatDateTime } from "../lib/format";
 import { exportPurchases, exportPurchaseLines, exportPurchasePayments } from "../lib/exportPurchases";
+import { exportBatches, exportBatchConsumptions } from "../lib/exportBatches";
 
 type Sup = {
   id: string; name: string; phone: string | null; address: string | null;
